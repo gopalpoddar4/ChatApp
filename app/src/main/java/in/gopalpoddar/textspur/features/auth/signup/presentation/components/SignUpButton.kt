@@ -1,4 +1,4 @@
-package `in`.gopalpoddar.textspur.features.auth.login.presentation.components
+package `in`.gopalpoddar.textspur.features.auth.signup.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoginButton(
+fun SignUpButton(
     onClick: () -> Unit,
     isLoading: Boolean,
     modifier: Modifier = Modifier
@@ -30,7 +30,7 @@ fun LoginButton(
                 modifier = Modifier.size(22.dp)
             )
         } else {
-            Text(text = "Login")
+            Text(text = "Sign Up")
         }
     }
 }

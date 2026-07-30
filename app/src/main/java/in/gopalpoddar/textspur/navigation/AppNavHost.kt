@@ -41,9 +41,16 @@ fun AppNavHost(
         }
         
         composable(route = Screen.SignUp.route) {
+            val signUpViewModel: `in`.gopalpoddar.textspur.features.auth.signup.presentation.SignUpViewModel = hiltViewModel()
             SignUpScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
+                viewModel = signUpViewModel,
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                },
+                onNavigateToLogin = {
+                    navController.popBackStack(Screen.Login.route, inclusive = false)
                 }
             )
         }
