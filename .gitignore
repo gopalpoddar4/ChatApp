@@ -1,0 +1,31 @@
+# 1. Built Application & Signing Files
+*.apk
+*.aar
+*.aab
+*.p12
+*.jks
+*.keystore
+*.pepk
+
+# 2. Build & Temporary Directories
+.gradle/
+build/
+app/build/
+/captures
+.externalNativeBuild
+.cxx
+
+# 3. Android Studio / IDEA Settings
+.idea/
+*.iml
+
+# 4. Local Environment & Secret Files (CRITICAL)
+local.properties
+secrets.properties
+google-services.json
+app/google-services.json
+
+# 5. OS Metadata & Log Files
+*.log
+.DS_Store
+Thumbs.db
