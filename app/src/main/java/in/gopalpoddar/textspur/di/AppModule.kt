@@ -12,6 +12,19 @@ import `in`.gopalpoddar.textspur.features.auth.login.data.repository.FirebaseAut
 import `in`.gopalpoddar.textspur.features.auth.login.domain.repository.AuthRepository
 import javax.inject.Singleton
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import dagger.hilt.android.qualifiers.ApplicationContext
+import `in`.gopalpoddar.textspur.features.profile.data.datasource.UserLocalDataSource
+import `in`.gopalpoddar.textspur.features.profile.data.datasource.UserRemoteDataSource
+import `in`.gopalpoddar.textspur.features.profile.data.repository.UserRepositoryImpl
+import `in`.gopalpoddar.textspur.features.profile.domain.repository.UserRepository
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -32,5 +45,28 @@ object AppModule {
     @Singleton
     fun provideAuthRepository(dataSource: FirebaseAuthDataSource): AuthRepository {
         return FirebaseAuthRepository(dataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseDatabaseReference(): DatabaseReference {
+        return Firebase.database.reference
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile("user_prefs") }
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        localDataSource: UserLocalDataSource,
+        remoteDataSource: UserRemoteDataSource
+    ): UserRepository {
+        return UserRepositoryImpl(localDataSource, remoteDataSource)
     }
 }

@@ -13,6 +13,8 @@ import `in`.gopalpoddar.textspur.features.auth.signup.presentation.SignUpScreen
 import `in`.gopalpoddar.textspur.features.chat.chatroom.presentation.ChatRoomScreen
 import `in`.gopalpoddar.textspur.features.chat.home.presentation.HomeScreen
 import `in`.gopalpoddar.textspur.features.profile.presentation.ProfileScreen
+import `in`.gopalpoddar.textspur.features.profile.saveprofile.presentation.SaveProfileScreen
+import `in`.gopalpoddar.textspur.features.profile.saveprofile.presentation.SaveProfileViewModel
 
 @Composable
 fun AppNavHost(
@@ -51,6 +53,11 @@ fun AppNavHost(
                 },
                 onNavigateToLogin = {
                     navController.popBackStack(Screen.Login.route, inclusive = false)
+                },
+                onNavigateToSaveProfile = {
+                    navController.navigate(Screen.SaveProfile.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
                 }
             )
         }
@@ -78,6 +85,18 @@ fun AppNavHost(
             ProfileScreen(
                 onNavigateBack = {
                     navController.popBackStack()
+                }
+            )
+        }
+        
+        composable(route = Screen.SaveProfile.route) {
+            val saveProfileViewModel: SaveProfileViewModel = hiltViewModel()
+            SaveProfileScreen(
+                viewModel = saveProfileViewModel,
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.SaveProfile.route) { inclusive = true }
+                    }
                 }
             )
         }

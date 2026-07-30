@@ -14,6 +14,10 @@ import javax.inject.Inject
 class FirebaseAuthRepository @Inject constructor(
     private val dataSource: FirebaseAuthDataSource
 ) : AuthRepository {
+    override fun isUserAuthenticated(): Boolean {
+        return dataSource.isUserAuthenticated()
+    }
+
     override suspend fun login(email: String, password: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
@@ -31,11 +35,11 @@ class FirebaseAuthRepository @Inject constructor(
         }
     }
 
-    override suspend fun signUp(name: String, email: String, password: String): Result<Unit> {
+    override suspend fun signUp(name: String, email: String, password: String): Result<String> {
         return withContext(Dispatchers.IO) {
             try {
-                dataSource.signUp(name, email, password)
-                Result.success(Unit)
+                val uid = dataSource.signUp(name, email, password)
+                Result.success(uid)
             } catch (e: Exception) {
                 val errorMessage = when (e) {
                     is FirebaseAuthUserCollisionException -> "An account with this email already exists."

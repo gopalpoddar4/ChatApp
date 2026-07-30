@@ -1,5 +1,6 @@
 package `in`.gopalpoddar.textspur.features.auth.signup.presentation
 
+import `in`.gopalpoddar.textspur.features.auth.signup.domain.model.CreateAccountResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,15 +23,19 @@ class SignUpViewModel @Inject constructor(
     fun signUp(name: String, email: String, password: String) {
         if (_uiState.value.isLoading) return
 
-        _uiState.update { it.copy(isLoading = true, error = null, isSuccess = false) }
+        _uiState.update { it.copy(isLoading = true, error = null, isSuccess = false, isProfileSaveRequired = false) }
 
         viewModelScope.launch {
-            val result = createAccountUseCase(name, email, password)
-            result.onSuccess {
-                _uiState.update { it.copy(isLoading = false, isSuccess = true) }
-            }
-            result.onFailure { exception ->
-                _uiState.update { it.copy(isLoading = false, error = exception.message) }
+            when (val result = createAccountUseCase(name, email, password)) {
+                is CreateAccountResult.Success -> {
+                    _uiState.update { it.copy(isLoading = false, isSuccess = true) }
+                }
+                is CreateAccountResult.ProfileSaveFailed -> {
+                    _uiState.update { it.copy(isLoading = false, isProfileSaveRequired = true) }
+                }
+                is CreateAccountResult.AuthError -> {
+                    _uiState.update { it.copy(isLoading = false, error = result.exception.message ?: "An unknown error occurred") }
+                }
             }
         }
     }
