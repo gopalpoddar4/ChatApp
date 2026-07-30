@@ -6,7 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import `in`.gopalpoddar.textspur.features.auth.login.presentation.LoginScreen
+import `in`.gopalpoddar.textspur.features.auth.login.presentation.LoginViewModel
 import `in`.gopalpoddar.textspur.features.auth.signup.presentation.SignUpScreen
 import `in`.gopalpoddar.textspur.features.chat.chatroom.presentation.ChatRoomScreen
 import `in`.gopalpoddar.textspur.features.chat.home.presentation.HomeScreen
@@ -24,7 +26,9 @@ fun AppNavHost(
         modifier = modifier
     ) {
         composable(route = Screen.Login.route) {
+            val loginViewModel: LoginViewModel = hiltViewModel()
             LoginScreen(
+                viewModel = loginViewModel,
                 onNavigateToHome = {
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
