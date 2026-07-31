@@ -18,6 +18,10 @@ class FirebaseAuthRepository @Inject constructor(
         return dataSource.isUserAuthenticated()
     }
 
+    override fun getCurrentUserId(): String? {
+        return dataSource.getCurrentUserId()
+    }
+
     override suspend fun login(email: String, password: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {

@@ -12,6 +12,7 @@ import `in`.gopalpoddar.textspur.features.auth.login.presentation.LoginViewModel
 import `in`.gopalpoddar.textspur.features.auth.signup.presentation.SignUpScreen
 import `in`.gopalpoddar.textspur.features.chat.chatroom.presentation.ChatRoomScreen
 import `in`.gopalpoddar.textspur.features.chat.home.presentation.HomeScreen
+import `in`.gopalpoddar.textspur.features.search.presentation.SearchScreen
 import `in`.gopalpoddar.textspur.features.profile.presentation.ProfileScreen
 import `in`.gopalpoddar.textspur.features.profile.saveprofile.presentation.SaveProfileScreen
 import `in`.gopalpoddar.textspur.features.profile.saveprofile.presentation.SaveProfileViewModel
@@ -64,17 +65,35 @@ fun AppNavHost(
         
         composable(route = Screen.Home.route) {
             HomeScreen(
-                onNavigateToChatRoom = {
-                    navController.navigate(Screen.ChatRoom.route)
+                onNavigateToChatRoom = { chatId ->
+                    navController.navigate(Screen.ChatRoom.createRoute(chatId))
                 },
                 onNavigateToProfile = {
                     navController.navigate(Screen.Profile.route)
+                },
+                onNavigateToSearch = {
+                    navController.navigate(Screen.Search.route)
                 }
             )
         }
         
-        composable(route = Screen.ChatRoom.route) {
+        composable(route = Screen.Search.route) {
+            SearchScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToChatRoom = { chatId ->
+                    navController.navigate(Screen.ChatRoom.createRoute(chatId)) {
+                        popUpTo(Screen.Search.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+        
+        composable(route = Screen.ChatRoom.route) { backStackEntry ->
+            val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
             ChatRoomScreen(
+                chatId = chatId,
                 onNavigateBack = {
                     navController.popBackStack()
                 }

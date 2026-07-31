@@ -26,18 +26,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TextSpurTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val startDestination = if (checkAuthStatusUseCase()) {
-                        Screen.Home.route
-                    } else {
-                        Screen.Login.route
-                    }
-                    
-                    AppNavHost(
-                        modifier = Modifier.padding(innerPadding),
-                        startDestination = startDestination
-                    )
+                val startDestination = if (checkAuthStatusUseCase()) {
+                    Screen.Home.route
+                } else {
+                    Screen.Login.route
                 }
+                
+                AppNavHost(
+                    modifier = Modifier.fillMaxSize(),
+                    startDestination = startDestination
+                )
             }
         }
     }

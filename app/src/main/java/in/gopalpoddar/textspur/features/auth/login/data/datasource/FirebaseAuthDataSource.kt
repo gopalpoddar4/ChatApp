@@ -12,6 +12,10 @@ class FirebaseAuthDataSource @Inject constructor(
         return firebaseAuth.currentUser != null
     }
 
+    fun getCurrentUserId(): String? {
+        return firebaseAuth.currentUser?.uid
+    }
+
     suspend fun login(email: String, password: String) {
         firebaseAuth.signInWithEmailAndPassword(email, password).await()
     }
