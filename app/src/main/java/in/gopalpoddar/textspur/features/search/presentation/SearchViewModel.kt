@@ -87,9 +87,7 @@ class SearchViewModel @Inject constructor(
                     initializeChatUseCase(
                         chatId = chatId,
                         currentUserId = currentUserId,
-                        currentUserName = currentUserProfile.name,
-                        otherUserId = selectedUserId,
-                        otherUserName = selectedUserProfile.name
+                        otherUserId = selectedUserId
                     )
                 }
 

@@ -8,7 +8,7 @@ import `in`.gopalpoddar.textspur.features.chat.chatroom.domain.usecase.ObserveMe
 import `in`.gopalpoddar.textspur.features.chat.chatroom.domain.usecase.ObserveParticipantUseCase
 import `in`.gopalpoddar.textspur.features.chat.chatroom.domain.usecase.SendMessageUseCase
 import `in`.gopalpoddar.textspur.features.chat.home.domain.model.Message
-import `in`.gopalpoddar.textspur.features.chat.home.domain.model.Participant
+
 import `in`.gopalpoddar.textspur.features.profile.domain.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -66,8 +66,7 @@ class ChatRoomViewModel @Inject constructor(
                 val profile = result.getOrThrow()
                 _state.update { 
                     it.copy(
-                        otherParticipant = it.otherParticipant?.copy(name = profile.name) 
-                            ?: Participant(name = profile.name, isOnline = false)
+                        otherParticipant = profile
                     ) 
                 }
             }

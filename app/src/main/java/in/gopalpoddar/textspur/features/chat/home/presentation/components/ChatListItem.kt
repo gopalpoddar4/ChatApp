@@ -28,9 +28,9 @@ fun ChatListItem(
     modifier: Modifier = Modifier
 ) {
     // Find the other participant's details
-    val otherParticipantEntry = chat.participants.entries.firstOrNull { it.key != currentUserId }
-    val otherParticipantName = otherParticipantEntry?.value?.name ?: "Unknown"
-    val isOnline = otherParticipantEntry?.value?.isOnline ?: false
+    val otherParticipant = chat.participants.firstOrNull { it.uid != currentUserId }
+    val otherParticipantName = otherParticipant?.name ?: "Unknown"
+    val isOnline = otherParticipant?.isOnline ?: false
 
     val timeString = if (chat.lastMessageTime > 0) {
         val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())

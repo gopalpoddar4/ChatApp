@@ -27,12 +27,11 @@ class ChatRemoteDataSource @Inject constructor(
                     if (participantsSnapshot.hasChild(currentUserId)) {
                         val chatId = chatSnapshot.key ?: continue
                         
-                        val participants = mutableMapOf<String, Participant>()
+                        val participants = mutableListOf<`in`.gopalpoddar.textspur.features.profile.domain.model.UserProfile>()
                         for (pSnapshot in participantsSnapshot.children) {
                             val uid = pSnapshot.key ?: continue
-                            val name = pSnapshot.child("name").getValue(String::class.java) ?: ""
-                            val isOnline = pSnapshot.child("isOnline").getValue(Boolean::class.java) ?: false
-                            participants[uid] = Participant(name, isOnline)
+                            // Just storing the UID for now, details will be fetched by Repository
+                            participants.add(`in`.gopalpoddar.textspur.features.profile.domain.model.UserProfile(uid = uid))
                         }
 
                         val lastMessage = chatSnapshot.child("lastMessage").getValue(String::class.java) ?: ""
@@ -124,41 +123,16 @@ class ChatRemoteDataSource @Inject constructor(
         databaseReference.updateChildren(updates).await()
     }
 
-    fun observeParticipant(chatId: String, participantId: String): Flow<Participant?> = callbackFlow {
-        val participantRef = databaseReference.child("chats").child(chatId).child("participants").child(participantId)
-        
-        val listener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val name = snapshot.child("name").getValue(String::class.java) ?: ""
-                    val isOnline = snapshot.child("isOnline").getValue(Boolean::class.java) ?: false
-                    trySend(Participant(name, isOnline))
-                } else {
-                    trySend(null)
-                }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                close(error.toException())
-            }
-        }
-        
-        participantRef.addValueEventListener(listener)
-        awaitClose { participantRef.removeEventListener(listener) }
-    }
 
     suspend fun initializeChatParticipants(
         chatId: String,
         currentUserId: String,
-        currentUserName: String,
-        otherUserId: String,
-        otherUserName: String
+        otherUserId: String
     ) {
         val updates = mapOf<String, Any>(
-            "/chats/$chatId/participants/$currentUserId/name" to currentUserName,
-            "/chats/$chatId/participants/$currentUserId/isOnline" to true,
-            "/chats/$chatId/participants/$otherUserId/name" to otherUserName,
-            "/chats/$chatId/participants/$otherUserId/isOnline" to false
+            "/chats/$chatId/participants/$currentUserId" to true,
+            "/chats/$chatId/participants/$otherUserId" to true
         )
         databaseReference.updateChildren(updates).await()
     }

@@ -9,6 +9,6 @@ interface ChatRepository {
     fun getChats(currentUserId: String): Flow<List<Chat>>
     fun observeMessages(chatId: String): Flow<List<Message>>
     suspend fun sendMessage(chatId: String, message: Message): Result<Unit>
-    suspend fun initializeChatParticipants(chatId: String, currentUserId: String, currentUserName: String, otherUserId: String, otherUserName: String): Result<Unit>
-    fun observeParticipant(chatId: String, participantId: String): Flow<Participant?>
+    suspend fun initializeChatParticipants(chatId: String, currentUserId: String, otherUserId: String): Result<Unit>
+    fun observeParticipant(chatId: String, participantId: String): Flow<`in`.gopalpoddar.textspur.features.profile.domain.model.UserProfile?>
 }

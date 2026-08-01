@@ -16,8 +16,16 @@ object ChatModule {
     @Provides
     @Singleton
     fun provideChatRepository(
-        remoteDataSource: ChatRemoteDataSource
+        remoteDataSource: ChatRemoteDataSource,
+        userRemoteDataSource: `in`.gopalpoddar.textspur.features.profile.data.datasource.UserRemoteDataSource,
+        chatDao: `in`.gopalpoddar.textspur.core.database.dao.ChatDao,
+        userDao: `in`.gopalpoddar.textspur.core.database.dao.UserDao
     ): ChatRepository {
-        return ChatRepositoryImpl(remoteDataSource)
+        return ChatRepositoryImpl(
+            remoteDataSource = remoteDataSource,
+            userRemoteDataSource = userRemoteDataSource,
+            chatDao = chatDao,
+            userDao = userDao
+        )
     }
 }

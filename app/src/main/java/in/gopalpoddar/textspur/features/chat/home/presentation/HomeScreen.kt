@@ -67,8 +67,8 @@ fun HomeScreen(
                         state.chats
                     } else {
                         state.chats.filter { chat ->
-                            val otherParticipant = chat.participants.entries.firstOrNull { it.key != state.currentUserId }
-                            val name = otherParticipant?.value?.name ?: ""
+                            val otherParticipant = chat.participants.firstOrNull { it.uid != state.currentUserId }
+                            val name = otherParticipant?.name ?: ""
                             name.contains(searchQuery, ignoreCase = true)
                         }
                     }

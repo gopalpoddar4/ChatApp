@@ -65,8 +65,9 @@ object AppModule {
     @Singleton
     fun provideUserRepository(
         localDataSource: UserLocalDataSource,
-        remoteDataSource: UserRemoteDataSource
+        remoteDataSource: UserRemoteDataSource,
+        userDao: `in`.gopalpoddar.textspur.core.database.dao.UserDao
     ): UserRepository {
-        return UserRepositoryImpl(localDataSource, remoteDataSource)
+        return UserRepositoryImpl(localDataSource, remoteDataSource, userDao)
     }
 }

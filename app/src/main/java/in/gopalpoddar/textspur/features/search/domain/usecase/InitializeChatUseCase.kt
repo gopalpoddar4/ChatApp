@@ -9,16 +9,12 @@ class InitializeChatUseCase @Inject constructor(
     suspend operator fun invoke(
         chatId: String,
         currentUserId: String,
-        currentUserName: String,
-        otherUserId: String,
-        otherUserName: String
+        otherUserId: String
     ): Result<Unit> {
         return chatRepository.initializeChatParticipants(
             chatId = chatId,
             currentUserId = currentUserId,
-            currentUserName = currentUserName,
-            otherUserId = otherUserId,
-            otherUserName = otherUserName
+            otherUserId = otherUserId
         )
     }
 }
