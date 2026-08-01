@@ -27,6 +27,8 @@ class ChatRepositoryImpl @Inject constructor(
     private val userDao: UserDao
 ) : ChatRepository {
 
+    private val observedUsers = mutableSetOf<String>()
+
     override fun getChats(currentUserId: String): Flow<List<Chat>> {
         // 1. Start a background sync
         CoroutineScope(Dispatchers.IO).launch {
@@ -96,6 +98,28 @@ class ChatRepositoryImpl @Inject constructor(
                     }
                 }
 
+                // Start real-time observation for missing users
+                val newUsersToObserve = userIdsToFetch.filter { !observedUsers.contains(it) }
+                newUsersToObserve.forEach { uid ->
+                    observedUsers.add(uid)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        userRemoteDataSource.observeUserProfile(uid).collect { profile ->
+                            profile?.let {
+                                userDao.upsertUser(
+                                    UserEntity(
+                                        uid = it.uid,
+                                        name = it.name,
+                                        email = it.email,
+                                        username = it.username,
+                                        isOnline = it.isOnline,
+                                        isVerified = it.isVerified
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+
                 // Fetch missing users concurrently
                 val userEntities = userIdsToFetch.map { uid ->
                     CoroutineScope(Dispatchers.IO).async {
@@ -161,6 +185,15 @@ class ChatRepositoryImpl @Inject constructor(
             remoteDataSource.initializeChatParticipants(
                 chatId, currentUserId, otherUserId
             )
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun resetUnreadCount(chatId: String, currentUserId: String): Result<Unit> {
+        return try {
+            remoteDataSource.resetUnreadCount(chatId, currentUserId)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

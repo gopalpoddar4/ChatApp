@@ -9,6 +9,7 @@ import `in`.gopalpoddar.textspur.features.chat.chatroom.domain.usecase.ObservePa
 import `in`.gopalpoddar.textspur.features.chat.chatroom.domain.usecase.SendMessageUseCase
 import `in`.gopalpoddar.textspur.features.chat.home.domain.model.Message
 
+import `in`.gopalpoddar.textspur.features.chat.home.domain.repository.ChatRepository
 import `in`.gopalpoddar.textspur.features.profile.domain.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class ChatRoomViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
+    private val chatRepository: ChatRepository,
     private val observeMessagesUseCase: ObserveMessagesUseCase,
     private val observeParticipantUseCase: ObserveParticipantUseCase,
     private val sendMessageUseCase: SendMessageUseCase
@@ -71,9 +73,13 @@ class ChatRoomViewModel @Inject constructor(
                 }
             }
         }
-        
         observeParticipant(chatId, otherUserId!!)
         observeMessages(chatId)
+
+        // Reset unread count
+        viewModelScope.launch {
+            chatRepository.resetUnreadCount(chatId, currentUserId)
+        }
     }
 
     private fun observeParticipant(chatId: String, participantId: String) {

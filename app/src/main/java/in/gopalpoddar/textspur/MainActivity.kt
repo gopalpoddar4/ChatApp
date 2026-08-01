@@ -13,6 +13,7 @@ import `in`.gopalpoddar.textspur.navigation.AppNavHost
 import `in`.gopalpoddar.textspur.navigation.Screen
 import `in`.gopalpoddar.textspur.ui.theme.TextSpurTheme
 import `in`.gopalpoddar.textspur.features.auth.login.domain.usecase.CheckAuthStatusUseCase
+import `in`.gopalpoddar.textspur.features.profile.domain.manager.PresenceManager
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -21,12 +22,20 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var checkAuthStatusUseCase: CheckAuthStatusUseCase
 
+    @Inject
+    lateinit var presenceManager: PresenceManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             TextSpurTheme {
-                val startDestination = if (checkAuthStatusUseCase()) {
+                val isAuthenticated = checkAuthStatusUseCase()
+                if (isAuthenticated) {
+                    presenceManager.startPresence()
+                }
+                
+                val startDestination = if (isAuthenticated) {
                     Screen.Home.route
                 } else {
                     Screen.Login.route

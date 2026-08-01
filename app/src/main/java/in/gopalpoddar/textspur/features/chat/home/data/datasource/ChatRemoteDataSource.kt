@@ -3,6 +3,7 @@ package `in`.gopalpoddar.textspur.features.chat.home.data.datasource
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import `in`.gopalpoddar.textspur.features.chat.home.domain.model.Chat
 import `in`.gopalpoddar.textspur.features.chat.home.domain.model.Message
@@ -28,21 +29,17 @@ class ChatRemoteDataSource @Inject constructor(
                         val chatId = chatSnapshot.key ?: continue
                         
                         val participants = mutableListOf<`in`.gopalpoddar.textspur.features.profile.domain.model.UserProfile>()
+                        val unreadCount = mutableMapOf<String, Int>()
                         for (pSnapshot in participantsSnapshot.children) {
                             val uid = pSnapshot.key ?: continue
                             // Just storing the UID for now, details will be fetched by Repository
                             participants.add(`in`.gopalpoddar.textspur.features.profile.domain.model.UserProfile(uid = uid))
+                            val count = pSnapshot.child("unreadCount").getValue(Int::class.java) ?: 0
+                            unreadCount[uid] = count
                         }
 
                         val lastMessage = chatSnapshot.child("lastMessage").getValue(String::class.java) ?: ""
                         val lastMessageTime = chatSnapshot.child("lastMessageTime").getValue(Long::class.java) ?: 0L
-                        
-                        val unreadCount = mutableMapOf<String, Int>()
-                        for (uSnapshot in chatSnapshot.child("unreadCount").children) {
-                            val uid = uSnapshot.key ?: continue
-                            val count = uSnapshot.getValue(Int::class.java) ?: 0
-                            unreadCount[uid] = count
-                        }
 
                         val messages = mutableListOf<Message>()
                         for (mSnapshot in chatSnapshot.child("messages").children) {
@@ -117,7 +114,8 @@ class ChatRemoteDataSource @Inject constructor(
         val updates = mapOf<String, Any>(
             "/chats/$chatId/messages/$messageId" to messageWithId,
             "/chats/$chatId/lastMessage" to message.message,
-            "/chats/$chatId/lastMessageTime" to message.timestamp
+            "/chats/$chatId/lastMessageTime" to message.timestamp,
+            "/chats/$chatId/participants/${message.receiverId}/unreadCount" to ServerValue.increment(1)
         )
         
         databaseReference.updateChildren(updates).await()
@@ -131,8 +129,15 @@ class ChatRemoteDataSource @Inject constructor(
         otherUserId: String
     ) {
         val updates = mapOf<String, Any>(
-            "/chats/$chatId/participants/$currentUserId" to true,
-            "/chats/$chatId/participants/$otherUserId" to true
+            "/chats/$chatId/participants/$currentUserId/unreadCount" to 0,
+            "/chats/$chatId/participants/$otherUserId/unreadCount" to 0
+        )
+        databaseReference.updateChildren(updates).await()
+    }
+
+    suspend fun resetUnreadCount(chatId: String, currentUserId: String) {
+        val updates = mapOf<String, Any>(
+            "/chats/$chatId/participants/$currentUserId/unreadCount" to 0
         )
         databaseReference.updateChildren(updates).await()
     }
