@@ -16,11 +16,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.res.painterResource
+import `in`.gopalpoddar.textspur.R
 
 import `in`.gopalpoddar.textspur.features.chat.home.domain.model.Chat
 import `in`.gopalpoddar.textspur.features.chat.common.presentation.components.UserAvatar
@@ -39,6 +42,7 @@ fun ChatListItem(
     val otherParticipant = chat.participants.firstOrNull { it.uid != currentUserId }
     val otherParticipantName = otherParticipant?.name ?: "Unknown"
     val isOnline = otherParticipant?.isOnline ?: false
+    val isVerified = otherParticipant?.isVerified ?: false
 
     val timeString = if (chat.lastMessageTime > 0) {
         val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
@@ -59,12 +63,23 @@ fun ChatListItem(
 
         Column(modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.Center) {
-            Text(
-                text = otherParticipantName,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = otherParticipantName,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+                if (isVerified) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.verified_badge),
+                        contentDescription = "Verified Badge",
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
             Text(
                 text = chat.lastMessage,
                 style = MaterialTheme.typography.bodyMedium,

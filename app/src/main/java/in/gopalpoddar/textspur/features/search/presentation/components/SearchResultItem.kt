@@ -14,6 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.res.painterResource
+import `in`.gopalpoddar.textspur.R
 import `in`.gopalpoddar.textspur.features.chat.common.presentation.components.UserAvatar
 import `in`.gopalpoddar.textspur.features.profile.domain.model.UserProfile
 
@@ -33,12 +37,23 @@ fun SearchResultItem(
         UserAvatar(name = user.name, isOnline = false) // Assuming online status is not available here
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = user.name,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = user.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+                if (user.isVerified) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.verified_badge),
+                        contentDescription = "Verified Badge",
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
             Text(
                 text = "@${user.username}",
                 style = MaterialTheme.typography.bodyMedium,

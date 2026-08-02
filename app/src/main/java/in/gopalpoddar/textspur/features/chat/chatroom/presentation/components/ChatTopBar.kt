@@ -1,7 +1,10 @@
 package `in`.gopalpoddar.textspur.features.chat.chatroom.presentation.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -14,13 +17,17 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import `in`.gopalpoddar.textspur.R
 import `in`.gopalpoddar.textspur.features.chat.common.presentation.components.UserAvatar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatTopBar(
     name: String,
+    username: String,
+    isVerified: Boolean,
     isOnline: Boolean,
     onNavigateBack: () -> Unit
 ) {
@@ -29,10 +36,29 @@ fun ChatTopBar(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 UserAvatar(name = name, isOnline = isOnline)
                 Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.titleMedium
-                )
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = name,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        if (isVerified) {
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Image(
+                                painter = painterResource(id = R.drawable.verified_badge),
+                                contentDescription = "Verified Badge",
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+                    if (username.isNotEmpty()) {
+                        Text(
+                            text = "@$username",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
         },
         navigationIcon = {

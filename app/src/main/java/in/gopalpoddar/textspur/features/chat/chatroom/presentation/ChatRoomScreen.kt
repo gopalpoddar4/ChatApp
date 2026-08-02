@@ -49,6 +49,8 @@ fun ChatRoomScreen(
         topBar = {
             ChatTopBar(
                 name = state.otherParticipant?.name ?: "Loading...",
+                username = state.otherParticipant?.username ?: "",
+                isVerified = state.otherParticipant?.isVerified ?: false,
                 isOnline = state.otherParticipant?.isOnline ?: false,
                 onNavigateBack = onNavigateBack
             )
