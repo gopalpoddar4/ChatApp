@@ -10,5 +10,7 @@ data class UserProfile(
     @get:PropertyName("isOnline")
     @set:PropertyName("isOnline")
     var isOnline: Boolean = false,
-    val isVerified: Boolean = false
+    @get:PropertyName("verified")
+    @set:PropertyName("verified")
+    var isVerified: Boolean = false
 )
