@@ -25,8 +25,9 @@ interface ChatDao {
 
     @Transaction
     @Query("""
-        SELECT * FROM chats 
+        SELECT chats.* FROM chats 
         INNER JOIN ChatParticipantCrossRef ON chats.chatId = ChatParticipantCrossRef.chatId
+        LEFT JOIN users ON users.uid = ChatParticipantCrossRef.uid
         WHERE ChatParticipantCrossRef.uid = :userId
         ORDER BY chats.lastMessageTime DESC
     """)

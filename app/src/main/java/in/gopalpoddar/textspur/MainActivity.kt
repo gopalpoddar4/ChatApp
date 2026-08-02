@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
             TextSpurTheme {
                 val isAuthenticated = checkAuthStatusUseCase()
                 if (isAuthenticated) {
-                    presenceManager.startPresence()
+                    ProcessLifecycleOwner.get().lifecycle.addObserver(presenceManager)
                 }
                 
                 val startDestination = if (isAuthenticated) {
