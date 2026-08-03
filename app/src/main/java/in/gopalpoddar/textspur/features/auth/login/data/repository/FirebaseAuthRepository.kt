@@ -56,4 +56,46 @@ class FirebaseAuthRepository @Inject constructor(
             }
         }
     }
+
+    override suspend fun logout(): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                dataSource.logout()
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    override suspend fun reauthenticate(password: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                dataSource.reauthenticate(password)
+                Result.success(Unit)
+            } catch (e: Exception) {
+                val errorMessage = when (e) {
+                    is FirebaseAuthInvalidCredentialsException -> "Incorrect password."
+                    is FirebaseAuthException -> e.message ?: "Authentication failed."
+                    else -> "An unexpected error occurred."
+                }
+                Result.failure(Exception(errorMessage))
+            }
+        }
+    }
+
+    override suspend fun deleteAccount(): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                dataSource.deleteAccount()
+                Result.success(Unit)
+            } catch (e: Exception) {
+                val errorMessage = when (e) {
+                    is FirebaseAuthException -> e.message ?: "Failed to delete account."
+                    else -> "An unexpected error occurred."
+                }
+                Result.failure(Exception(errorMessage))
+            }
+        }
+    }
 }

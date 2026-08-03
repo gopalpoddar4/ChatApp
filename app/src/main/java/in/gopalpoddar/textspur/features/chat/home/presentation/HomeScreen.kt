@@ -35,7 +35,9 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            HomeTopBar()
+            HomeTopBar({
+                onNavigateToProfile()
+            })
         },
         floatingActionButton = {
             NewChatFab(

@@ -31,4 +31,20 @@ class FirebaseAuthDataSource @Inject constructor(
         
         return user.uid
     }
+
+    suspend fun logout() {
+        firebaseAuth.signOut()
+    }
+
+    suspend fun reauthenticate(password: String) {
+        val user = firebaseAuth.currentUser ?: throw Exception("User not logged in")
+        val email = user.email ?: throw Exception("User email not found")
+        val credential = com.google.firebase.auth.EmailAuthProvider.getCredential(email, password)
+        user.reauthenticate(credential).await()
+    }
+
+    suspend fun deleteAccount() {
+        val user = firebaseAuth.currentUser ?: throw Exception("User not logged in")
+        user.delete().await()
+    }
 }

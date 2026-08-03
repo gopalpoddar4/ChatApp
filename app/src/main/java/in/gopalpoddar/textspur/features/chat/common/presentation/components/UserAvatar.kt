@@ -12,13 +12,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.TextStyle
 
 @Composable
 fun UserAvatar(
     userId: String,
     name: String,
     isOnline: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    avatarSize: androidx.compose.ui.unit.Dp = 48.dp,
+    textStyle: TextStyle = MaterialTheme.typography.titleMedium
 ) {
     val initial = if (name.isNotBlank()) name.first().uppercase() else "?"
     
@@ -28,7 +31,7 @@ fun UserAvatar(
     Box(modifier = modifier) {
         Box(
             modifier = Modifier
-                .size(48.dp)
+                .size(avatarSize)
                 .clip(CircleShape)
                 .background(avatarBackground),
             contentAlignment = Alignment.Center
@@ -36,7 +39,7 @@ fun UserAvatar(
             Text(
                 text = initial,
                 color = avatarForeground,
-                style = MaterialTheme.typography.titleMedium
+                style = textStyle
             )
         }
         

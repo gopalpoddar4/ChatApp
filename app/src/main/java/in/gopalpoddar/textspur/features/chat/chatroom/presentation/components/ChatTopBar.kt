@@ -44,7 +44,6 @@ fun ChatTopBar(
                             style = MaterialTheme.typography.titleMedium
                         )
                         if (isVerified) {
-                            Spacer(modifier = Modifier.width(4.dp))
                             Image(
                                 painter = painterResource(id = R.drawable.verified_badge),
                                 contentDescription = "Verified Badge",

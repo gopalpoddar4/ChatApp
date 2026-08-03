@@ -104,6 +104,12 @@ fun AppNavHost(
             ProfileScreen(
                 onNavigateBack = {
                     navController.popBackStack()
+                },
+                onNavigateToSplash = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
         }

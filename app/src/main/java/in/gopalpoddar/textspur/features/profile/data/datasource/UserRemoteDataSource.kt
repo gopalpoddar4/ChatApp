@@ -25,6 +25,16 @@ class UserRemoteDataSource @Inject constructor(
         }
     }
 
+    suspend fun deleteUserProfile(uid: String) {
+        kotlinx.coroutines.withTimeout(10000.milliseconds) {
+            databaseReference
+                .child("users")
+                .child(uid)
+                .removeValue()
+                .await()
+        }
+    }
+
     suspend fun getUserProfile(uid: String): UserProfile? {
         val snapshot = databaseReference.child("users").child(uid).get().await()
         return snapshot.getValue(UserProfile::class.java)

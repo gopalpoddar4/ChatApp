@@ -1,5 +1,6 @@
 package `in`.gopalpoddar.textspur.features.profile.data.repository
 
+import `in`.gopalpoddar.textspur.core.database.AppDatabase
 import `in`.gopalpoddar.textspur.core.database.dao.UserDao
 import `in`.gopalpoddar.textspur.core.database.entity.UserEntity
 import `in`.gopalpoddar.textspur.features.profile.data.datasource.UserLocalDataSource
@@ -13,7 +14,8 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val localDataSource: UserLocalDataSource, // Keeping datastore just in case it's used elsewhere, but will primarily use Room
     private val remoteDataSource: UserRemoteDataSource,
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val appDatabase: AppDatabase
 ) : UserRepository {
 
     override suspend fun saveUserProfile(userProfile: UserProfile): Result<Unit> {
@@ -95,6 +97,24 @@ class UserRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                 Result.failure(e)
             }
+        }
+    }
+
+    override suspend fun deleteUserProfile(uid: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                remoteDataSource.deleteUserProfile(uid)
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    override suspend fun clearLocalUserData() {
+        withContext(Dispatchers.IO) {
+            localDataSource.clearUserProfile()
+            appDatabase.clearAllTables()
         }
     }
 }
