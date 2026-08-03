@@ -1,6 +1,7 @@
 package `in`.gopalpoddar.textspur.features.chat.common.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -14,23 +15,27 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun UserAvatar(
+    userId: String,
     name: String,
     isOnline: Boolean,
     modifier: Modifier = Modifier
 ) {
     val initial = if (name.isNotBlank()) name.first().uppercase() else "?"
     
+    val isDarkTheme = isSystemInDarkTheme()
+    val (avatarForeground, avatarBackground) = getAvatarColor(userId = userId, isDarkTheme = isDarkTheme)
+    
     Box(modifier = modifier) {
         Box(
             modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer),
+                .background(avatarBackground),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = initial,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = avatarForeground,
                 style = MaterialTheme.typography.titleMedium
             )
         }

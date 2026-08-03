@@ -25,6 +25,7 @@ import `in`.gopalpoddar.textspur.features.chat.common.presentation.components.Us
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatTopBar(
+    userId: String,
     name: String,
     username: String,
     isVerified: Boolean,
@@ -34,7 +35,7 @@ fun ChatTopBar(
     TopAppBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                UserAvatar(name = name, isOnline = isOnline)
+                UserAvatar(userId = userId, name = name, isOnline = isOnline)
                 Spacer(modifier = Modifier.width(12.dp))
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {

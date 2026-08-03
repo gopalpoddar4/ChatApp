@@ -58,7 +58,7 @@ fun ChatListItem(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        UserAvatar(name = otherParticipantName, isOnline = isOnline)
+        UserAvatar(userId = otherParticipant?.uid ?: "", name = otherParticipantName, isOnline = isOnline)
         Spacer(modifier = Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f),

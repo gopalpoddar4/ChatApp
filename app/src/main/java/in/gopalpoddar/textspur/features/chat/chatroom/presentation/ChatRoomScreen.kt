@@ -48,6 +48,7 @@ fun ChatRoomScreen(
     Scaffold(
         topBar = {
             ChatTopBar(
+                userId = state.otherParticipant?.uid ?: "",
                 name = state.otherParticipant?.name ?: "Loading...",
                 username = state.otherParticipant?.username ?: "",
                 isVerified = state.otherParticipant?.isVerified ?: false,

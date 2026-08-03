@@ -34,7 +34,7 @@ fun SearchResultItem(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        UserAvatar(name = user.name, isOnline = false) // Assuming online status is not available here
+        UserAvatar(userId = user.uid, name = user.name, isOnline = false) // Assuming online status is not available here
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
