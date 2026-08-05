@@ -50,6 +50,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-process:2.8.6")
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.messaging)
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
